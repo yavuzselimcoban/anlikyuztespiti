@@ -20,7 +20,7 @@ import time
 import sys
 
 class Config:
-    # DNN model yolları (proje kök dizininde olduğunu varsayarak)
+    # DNN model yollari (proje kok dizininde oldugunu varsayarak)
     DNN_PROTOTXT = os.path.join(os.path.dirname(__file__), "deploy.prototxt")
     DNN_MODEL = os.path.join(os.path.dirname(__file__), "res10_300x300_ssd_iter_140000.caffemodel")
 
@@ -129,10 +129,10 @@ class VideoThread(QThread):
             if not ret:
                 break
 
-            # Kare boyutları
+            # Kare boyutlari
             h, w = frame.shape[:2]
             frame = cv.flip(frame, 1)
-            # Blob oluştur
+            # Blob olustur
             blob = cv.dnn.blobFromImage(cv.resize(frame, (300, 300)), 1.0,
                                         (300, 300), (104.0, 177.0, 123.0))
             # DNN (Deep Neural Network) girişine uygun formatta bir blob (görüntü verisi) oluşturur.
@@ -144,7 +144,7 @@ class VideoThread(QThread):
             detections = self.net.forward()
             # bu degisken tespitn edilen yuzler icerir
 
-            # Yüzleri işle
+            # Yuzleri isle
             for i in range(detections.shape[2]):
                 confidence = detections[0, 0, i, 2] # bu bize confidence i donuyor
                 if confidence > 0.5:
@@ -158,11 +158,11 @@ class VideoThread(QThread):
                     else:
                         color = (0, 0, 255) # kirmizi
 
-                    # Yüz kutusu çiz
+                    # Yuz kutusu çiz
                     cv.rectangle(frame, (startX, startY), (endX, endY),
                                 color,2)
 
-                    # Güven skoru yaz
+                    # Guven skoru yaz
                     text = f"{confidence*100:.1f}%"
                     y = startY - 10 if startY - 10 > 10 else startY + 10
                     cv.putText(frame, text, (startX, y),
@@ -190,7 +190,7 @@ class VideoThread(QThread):
             self.change_pixmap_signal.emit(rgb_image)
             self.face_count_signal.emit(face_count)
 
-        # Kaynakları serbest bırak
+        # Kaynaklari serbest birak
         cap.release()
 
 
@@ -226,7 +226,7 @@ class MainWindow(QWidget):
         self.face_count_label.setText("Tespit edilen yüz sayısı: 0")
         self.face_count_label.setStyleSheet("color: black;")
 
-        # Tema geçiş butonu
+        # Tema gecis butonu
         self.theme_toggle_button = QPushButton("Koyu Tema")
 
         self.theme_toggle_button.setStyleSheet("""
@@ -264,6 +264,7 @@ class MainWindow(QWidget):
                                 # gibi davranmiyor normal ayni layoutun icine widget eklemis gibi davraniyor
 
         # Thread Detected
+       
         self.thread = VideoThread()
         self.thread.change_pixmap_signal.connect(self.update_image)
         # sinyal gelirse baglanacagi fonksiyonu soyluyor.
@@ -271,6 +272,7 @@ class MainWindow(QWidget):
         self.thread.start()
 
         # Thread Original
+       
         self.thread_ori = VideoThread_ori()
         self.thread_ori.change_pixmap_signal.connect(self.update_image_original)
         self.thread_ori.start()
